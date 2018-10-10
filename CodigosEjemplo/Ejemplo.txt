@@ -1,0 +1,46 @@
+KYU#
+{
+	x is 5
+     	myVar is "hola"
+     	myList is [1,3,5]
+
+	change a,b,c
+		+* b,c,5
+		c
+		-+ ~1,~3,~b
+	changed
+
+	given a > 10
+     		given b > 5
+        		x is + a,b
+      		otherwise
+        		x is - a,b
+      		done
+    	done
+
+	forevery c in s
+  		x is c
+	done
+
+	x is 0
+    	forever
+      		given x > 10
+        		stop
+      		otherwise
+        		change x
+          			+x,1
+        		changed
+      		done
+    	done
+
+	max a,b is
+		given a > b
+			return a
+		otherwise
+			return b
+		done
+	done
+
+
+}
+

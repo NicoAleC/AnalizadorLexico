@@ -1,0 +1,40 @@
+package view;
+
+import java.util.ArrayList;
+
+import control.Lexico;
+import entity.Token;
+
+public class Principal {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		Lexico control = new Lexico();
+		ArrayList<String> lineas = new ArrayList<String>();
+		ArrayList<Token> tokens = new ArrayList<Token>();
+		control.leer(lineas);
+		control.ordenar(lineas, tokens);
+		control.definir(tokens);
+		for (int i = 0; i < tokens.size(); i++) {
+			tokens.get(i).ver();
+		}
+		/*
+		*
+		String a = "perro <= Milton[]()\"";
+		String[] b = new String[a.length()];
+		for (int i = 0; i < b.length; i++) {
+			b[i] = a.substring(i, i+1);
+			System.out.println(b[i]);
+			System.out.println("simbolo " + control.esSimbolo(b[i]));
+			System.out.println("identificador " + control.esIdentificador(b[i]));
+		}
+		System.out.println(Arrays.toString(b));
+		*
+		*/
+		//String c = "0XAf34";
+		//System.out.println(control.esHexadecimal(c));
+
+	}
+
+}

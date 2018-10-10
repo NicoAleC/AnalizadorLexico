@@ -1,0 +1,193 @@
+package control;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import entity.Token;
+
+public class Lexico {
+	
+	public void leer(ArrayList<String> lineas) {
+		File archivo = null;
+		FileReader fr = null;
+		BufferedReader br = null;
+
+		try {
+			// Apertura del fichero y creacion de BufferedReader para poder
+			// hacer una lectura comoda (disponer del metodo readLine()).
+			archivo = new File("C:\\Users\\chinc\\Documents\\upb\\Automatas\\Proyecto\\"
+					+ "HeapSort.txt");
+			fr = new FileReader(archivo);
+			br = new BufferedReader(fr);
+
+			// Lectura del fichero
+			String linea = "";
+			while ((linea = br.readLine()) != null) {
+				lineas.add(linea);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// En el finally cerramos el fichero, para asegurarnos
+			// que se cierra tanto si todo va bien como si salta
+			// una excepcion.
+			try {
+				if (null != fr) {
+					fr.close();
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+
+	}
+
+	public boolean esSimbolo(String c) {
+		Pattern pat = Pattern.compile(":|\\(|\\)|=|\\[|\\]|-|\\+|>|<|,|\\*|/|!|\"|'");
+		Matcher mat = pat.matcher(c);
+		return mat.matches();
+	}
+
+	public boolean esSimboloA(String c) {
+		Pattern pat = Pattern.compile("\\(|\\)|\\[|\\]");
+		Matcher mat = pat.matcher(c);
+		return mat.matches();
+	}
+	
+	public boolean esSimboloC(String c) {
+		Pattern pat = Pattern.compile("\"|'");
+		Matcher mat = pat.matcher(c);
+		return mat.matches();
+	}
+	
+	public boolean esDecimal(String c) {
+		Pattern pat = Pattern.compile("\\d");
+		Matcher mat = pat.matcher(c);
+		return mat.matches();
+	}
+
+	public boolean esHexadecimal(String c) {
+		Pattern pat = Pattern.compile("^0x[\\d|a|A|b|B|c|C|d|D|e|E|f|F]*");
+		Matcher mat = pat.matcher(c);
+		Pattern pat2 = Pattern.compile("^0X[\\d|a|A|b|B|c|C|d|D|e|E|f|F]*");
+		Matcher mat2 = pat2.matcher(c);
+		return mat.matches() || mat2.matches();
+	}
+	
+	public boolean esOctal(String c) {
+		Pattern pat = Pattern.compile("^0o[0|1|2|3|4|5|6|7]*");
+		Matcher mat = pat.matcher(c);
+		Pattern pat2 = Pattern.compile("^0O[0|1|2|3|4|5|6|7]*");
+		Matcher mat2 = pat2.matcher(c);
+		return mat.matches() || mat2.matches();
+	}
+	
+	public boolean esBinario(String c) {
+		Pattern pat = Pattern.compile("^0b[0|1]*");
+		Matcher mat = pat.matcher(c);
+		Pattern pat2 = Pattern.compile("^0B[0|1]*");
+		Matcher mat2 = pat2.matcher(c);
+		return mat.matches() || mat2.matches();
+	}
+	
+	public boolean esCadena(String c) {
+		Pattern pat = Pattern.compile("\".\\w.\"");
+		Matcher mat = pat.matcher(c);
+		return mat.matches();
+	}
+	
+	public boolean esPalabraReservada(String c) {
+		Pattern pat = Pattern.compile("begin|BEGIN|END|end|and|break|case|class|def|defined|do|"
+				+ "else|case|if|unless|elsif|ensure|false|for|in|module|next|nil|not|or|redo|"
+				+ "rescue|retry|return|self|super|then|true|undef|until|when|while|yield");
+		Matcher mat = pat.matcher(c);
+		return mat.matches();
+	}
+	
+	public boolean esIdentificador(String c) {
+		Pattern pat = Pattern.compile("^[^\\d].*");
+		Matcher mat = pat.matcher(c);
+		return mat.matches() && !esSimbolo(c);
+	}
+	
+	public void ordenar(ArrayList<String> lineas, ArrayList<Token> tokens) {
+		String[] codigo = new String[lineas.size()];
+		String[] aux;
+		String sc = "";
+		for (int i = 0; i < lineas.size(); i++) {
+			codigo[i] = lineas.get(i);
+			// System.out.println(codigo[i]);
+			aux = new String[codigo[i].length() + 1];
+			aux[codigo[i].length()] = "";
+			for (int j = 0; j < aux.length - 1; j++) {
+				aux[j] = codigo[i].substring(j, j + 1);
+			}
+			for (int j = 0; j < aux.length - 1; j++) {
+				// System.out.println(aux[j]);
+				if (aux[j].codePointAt(0) != 32 && !aux[j].equals("\t") && !esSimbolo(aux[j])) {
+					sc += aux[j];
+				} else if (aux[j].codePointAt(0) == 32 || aux[j].equals("\t")) {
+					if (!sc.equals("")) {
+						tokens.add(new Token(sc, i, j));
+					}
+						sc = "";
+				} else if (esSimbolo(aux[j])) {
+					if (esSimbolo(aux[j]) && aux[j + 1].equals("=")) {
+						tokens.add(new Token(sc, i, j));
+						if (!esSimboloA(aux[j])) {
+							tokens.add(new Token(aux[j] + aux[j + 1], i, j));
+							j++;
+						} else {
+							tokens.add(new Token(aux[j], i, j));
+						}
+						sc = "";
+					} else if (esSimbolo(aux[j])) {
+						tokens.add(new Token(sc, i, j));
+						tokens.add(new Token(aux[j], i, j));
+						sc = "";
+					}
+				} /*else if (esSimboloC(aux[j])) {
+					sc = aux[j];
+					j++;
+					while (!esSimboloC(aux[j])) {
+						sc += aux[j];
+						j++;
+					}
+					sc += aux[j];
+					tokens.add(new Token(sc, i, j));
+					sc = "";
+				}*/
+			}
+		}
+
+	}
+
+	public void definir(ArrayList<Token> tokens) {
+		for(int i = 0; i < tokens.size(); i++) {
+			if(esSimbolo(tokens.get(i).getCadena())) {
+				tokens.get(i).setTipo("Símbolo");
+			} else if(esDecimal(tokens.get(i).getCadena())) {
+				tokens.get(i).setTipo("Número");
+			} else if(esPalabraReservada(tokens.get(i).getCadena())) {
+				tokens.get(i).setTipo("PR");
+			} else if(esIdentificador(tokens.get(i).getCadena())) {
+				tokens.get(i).setTipo("Identificador");
+			}
+			else if(esHexadecimal(tokens.get(i).getCadena())) {
+				tokens.get(i).setTipo("Hexadecimal");
+			}
+			else if(esOctal(tokens.get(i).getCadena())) {
+				tokens.get(i).setTipo("Octal");
+			}
+			else if(esBinario(tokens.get(i).getCadena())) {
+				tokens.get(i).setTipo("Binario");
+			}
+		
+		}
+	}
+
+}

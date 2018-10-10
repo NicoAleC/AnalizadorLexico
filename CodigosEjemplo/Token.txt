@@ -1,0 +1,73 @@
+package entity;
+
+public class Token {
+	
+
+	private String tipo;
+	private String cadena;
+	private int linea;
+	private int columna;
+
+	public Token() {
+		tipo = "error";
+		cadena = "";
+		linea = columna = 0;
+	}
+
+	public Token(String tipo, String cadena) {
+		this.tipo = tipo;
+		this.cadena = cadena;
+		linea = columna = 0;
+	}
+
+	public Token(String cadena) {
+		this.tipo = "error";
+		this.cadena = cadena;
+		linea = columna = 0;
+	}
+
+	public Token(String cadena, int linea, int columna) {
+		this.tipo = "error";
+		this.cadena = cadena;
+		this.linea = linea;
+		this.columna = columna;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getCadena() {
+		return cadena;
+	}
+
+	public void setCadena(String cadena) {
+		this.cadena = cadena;
+	}
+
+	public int getLinea() {
+		return linea;
+	}
+
+	public void setLinea(int linea) {
+		this.linea = linea;
+	}
+
+	public int getColumna() {
+		return columna;
+	}
+
+	public void setColumna(int columna) {
+		this.columna = columna;
+	}
+
+	public void ver() {
+		System.out.println(cadena + "\tes un(a):\t" + tipo + "\tlinea:\t" 
+									+ linea + "\tcolumna:\t" + columna);
+	}
+
+}
