@@ -8,11 +8,11 @@ namespace AnalizadorLexico.entity
 {
     class Token
     {
-        private string token { get; set; }
-        private string lexema { get; set; }
+        private string token { get; set; }//describe si es palabra reservada u otro
+        private string lexema { get; set; }//lo que es
         private int linea { get; set; }
         private int columna { get; set; }
-        private string descripcion { get; set; }
+        private string descripcion { get; set; }//en caso de necesitar una descripción más detallada
 
         public Token()
         {
@@ -23,13 +23,13 @@ namespace AnalizadorLexico.entity
             this.descripcion = "";
         }
 
-        public Token(string token, string lexema, int linea, int columna, string descripcion)
+        public Token(string token, string lexema, int linea, int columna)
         {
             this.token = token;
             this.lexema = lexema;
             this.linea = linea;
             this.columna = columna;
-            this.descripcion = descripcion;
+            this.descripcion = "";
         }
     }
 }
