@@ -8,11 +8,11 @@ namespace AnalizadorLexico.entity
 {
     class Token
     {
-        private string token { get; set; }//describe si es palabra reservada u otro
-        private string lexema { get; set; }//lo que es
-        private int linea { get; set; }
-        private int columna { get; set; }
-        private string descripcion { get; set; }//en caso de necesitar una descripción más detallada
+        public string token { get; set; }//describe si es palabra reservada u otro
+        public string lexema { get; set; }//lo que es
+        public int linea { get; set; }
+        public int columna { get; set; }
+        public string descripcion { get; set; }//en caso de necesitar una descripción más detallada
 
         public Token()
         {
@@ -31,5 +31,20 @@ namespace AnalizadorLexico.entity
             this.columna = columna;
             this.descripcion = "";
         }
+
+        public Token(string lexema, int linea, int columna)
+        {
+            this.token = "";
+            this.lexema = lexema;
+            this.linea = linea;
+            this.columna = columna;
+            this.descripcion = "";
+        }
+        override
+        public string ToString()
+        {
+            return this.lexema + "\t es: " + this.token + "\tlinea: " + this.linea + "\tcolumna: " + this.columna + "\tdescripción: " + this.descripcion;
+        }
+
     }
 }
