@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+
+
 using System.Threading.Tasks;
 
 namespace AnalizadorLexico.control
@@ -40,5 +43,38 @@ namespace AnalizadorLexico.control
 
             return codigo;
         }
+
+
+        public bool esIdentificador(String cadena){
+
+            string patron = @"^[^\\d].*"
+
+            Match match = Regex.Match(cadena, patron);
+
+            return match.Success;
+        }
+
+        public bool esOperador(String cadena){
+
+            Regex regex = new Regex();
+        }
+
+        public bool esPalabraReservada(String cadena){
+
+            string patron = @"change | changed | given | otherwise | done | return | forevery | forever | done | in | stop";
+            Match match = Regex.Match(cadena, patron);
+            return match.Success;
+        }        
+
+        public bool esNumero(String cadena){
+
+            string patron = @"^~?(0|([1-9]\d*))(\.\d+)?$"
+            Match match = Regex.Match(cadena, patron);
+            return match.Success;
+        }
+
+
+
+
     }
 }
