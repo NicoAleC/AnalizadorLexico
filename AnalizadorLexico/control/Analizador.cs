@@ -47,31 +47,58 @@ namespace AnalizadorLexico.control
 
         public bool esIdentificador(String cadena){
 
-            string patron = @"^[^\\d].*"
+            string patron = @"^[^\d].*$"
 
             Match match = Regex.Match(cadena, patron);
 
             return match.Success;
         }
 
-        public bool esOperador(String cadena){
+        public bool esPalabraReservada(String cadena)
+        {
 
-            Regex regex = new Regex();
-        }
-
-        public bool esPalabraReservada(String cadena){
-
-            string patron = @"change | changed | given | otherwise | done | return | forevery | forever | done | in | stop";
+            string patron = @"^change$|^changed$|^given$|^otherwise$|^done$|^return$|^forevery$|^forever$|^done$|^in$|^stop$|^KYU#$";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
-        }        
+        }
 
-        public bool esNumero(String cadena){
+        public bool esNumero(String cadena)
+        {
 
             string patron = @"^~?(0|([1-9]\d*))(\.\d+)?$"
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
+
+        public bool esOperador(String cadena){
+
+            string patron = @"\+|-|\*|\/|\^|=|!|<|>|,";
+            Match match = Regex.Match(cadena, patron);
+            return match.Success;     
+        }
+
+        public bool esPoLoC(string cadena){
+
+            string patron = @"\]|\(|\)|{|}|\[";
+            Match match = Regex.Match(cadena, patron);
+            return match.Success; 
+        }
+
+        public bool esComilla(String cadena){
+
+            string patron = @"\"|'";
+            Match match = Regex.Match(cadena, patron);
+            return match.Success; 
+        }
+
+        public bool esCadena(String cadena){
+
+            string patron = @"\"(\s)*\w*(\s)*\"";
+            Match match = Regex.Match(cadena, patron);
+            return match.Success; 
+        }
+
+
 
 
 
