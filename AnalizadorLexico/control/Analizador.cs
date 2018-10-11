@@ -15,7 +15,7 @@ namespace AnalizadorLexico.control
         public string[] leerArchivo()
         {
             string[] codigo;
-            List<String> lineas = new List<String>();
+            List<string> lineas = new List<string>();
             StreamReader reader;
             try
             {
@@ -45,32 +45,33 @@ namespace AnalizadorLexico.control
         }
 
 
-        public bool esIdentificador(String cadena){
-
-            string patron = @"^[^\d].*$"
-
-            Match match = Regex.Match(cadena, patron);
-
-            return match.Success;
-        }
-
-        public bool esPalabraReservada(String cadena)
+        public bool esIdentificador(string cadena)
         {
 
-            string patron = @"^change$|^changed$|^given$|^otherwise$|^done$|^return$|^forevery$|^forever$|^done$|^in$|^stop$|^KYU#$";
+            string patron = @"^[^\d].*$";
+
             Match match = Regex.Match(cadena, patron);
+
             return match.Success;
         }
 
-        public bool esNumero(String cadena)
+        public bool esPalabraReservada(string cadena)
         {
 
-            string patron = @"^~?(0|([1-9]\d*))(\.\d+)?$"
+            string patron = @"^change$|^changed$|^given$|^otherwise$|^done$|^return$|^forevery$|^forever$|^done$|^in$|^stop$|^KYU#$|^is$";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
 
-        public bool esOperador(String cadena){
+        public bool esNumero(string cadena)
+        {
+
+            string patron = @"\\d";
+            Match match = Regex.Match(cadena, patron);
+            return match.Success;
+        }
+
+        public bool esOperador(string cadena){
 
             string patron = @"\+|-|\*|\/|\^|=|!|<|>|,";
             Match match = Regex.Match(cadena, patron);
@@ -84,16 +85,16 @@ namespace AnalizadorLexico.control
             return match.Success; 
         }
 
-        public bool esComilla(String cadena){
-
-            string patron = @"\"|'";
+        public bool esComilla(string cadena){
+            string comilla = "\"";
+            string patron = @comilla + "|'";
             Match match = Regex.Match(cadena, patron);
             return match.Success; 
         }
 
         public bool esCadena(String cadena){
-
-            string patron = @"\"(\s)*\w*(\s)*\"";
+            string comilla = "\"";
+            string patron = comilla + ".\\w." +comilla;
             Match match = Regex.Match(cadena, patron);
             return match.Success; 
         }
