@@ -30,8 +30,7 @@ namespace AnalizadorLexico.control
                         lineas.Add(linea);
                     }
                 }
-
-                Console.WriteLine("lineas leídas: " + lineas.Count);
+                
                 codigo = new string[lineas.Count];
                 for (int i = 0; i < codigo.Length; i++)
                 {
@@ -207,8 +206,7 @@ namespace AnalizadorLexico.control
                 }
 
             }
-
-            Console.WriteLine("array list de tokens :" + auxTokens.Count);
+            
             tokens = new Token[auxTokens.Count];
             for (int i = 0; i < auxTokens.Count; i++)
             {
@@ -251,7 +249,6 @@ namespace AnalizadorLexico.control
                 }
                 
             }
-            Console.WriteLine("arreglo de tokens: " + tokens.Length);
             return tokens;
         }
 
