@@ -60,7 +60,7 @@ namespace AnalizadorLexico.control
         public bool EsPalabraReservada(string cadena)
         {
 
-            string patron = @"^change$|^changed$|^given$|^otherwise$|^done$|^return$|^forevery$|^forever$|^done$|^in$|^stop$|^KYU#$|^is$";
+            string patron = @"^change$|^changed$|^given$|^otherwise$|^done$|^return$|^forevery$|^forever$|^done$|^in$|^stop$|^kyu#$|^is$";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
