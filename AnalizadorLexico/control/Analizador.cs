@@ -95,21 +95,21 @@ namespace AnalizadorLexico.control
 
         public bool EsOperadorA(string cadena){
 
-            string patron = "\\+|-|\\*|/|\\^";
+            string patron = "\\+|-|\\*|/|\\^|!";
             Match match = Regex.Match(cadena, patron);
             return match.Success;     
         }
 
         public bool EsOperadorL(string cadena)
         {
-            string patron = "&|&&|\\||\\|\\||!";
+            string patron = "&|&&|\\||\\|\\||~";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
 
         public bool EsComparador(string cadena)
         {
-            string patron = "<|>|==|!=|>=|<=";
+            string patron = "<|>|==|~=|>=|<=";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
@@ -127,30 +127,16 @@ namespace AnalizadorLexico.control
             return match.Success; 
         }
 
-        public bool EsBarraBaja(string cadena)
-        {
-            string patron = "_";
-            Match match = Regex.Match(cadena, patron);
-            return match.Success;
-        }
-
         public bool EsCadena(string cadena){
             
-            string patron = "^\"[\\w|\\s|\\W]*";
+            string patron = "^\"[\\w|\\s|\\W]*\"$";
             Match match = Regex.Match(cadena, patron);
             return match.Success; 
         }
 
-        public bool EsComentario(string cadena)
-        {
-            string patron = "^_[\\w|\\s]*";
-            Match match = Regex.Match(cadena, patron);
-            return match.Success;
-        }
-
         public bool EsSimbolo(string cadena)
         {
-            string patron = ":|\\(|\\)|=|\\[|\\]|{|}|-|\\+|>|<|,|\\*|/|!|\"|'|&|\\|\\||\\|";
+            string patron = ":|\\(|\\)|=|\\[|\\]|{|}|-|\\+|>|<|,|\\*|/|!|\"|'|&|\\|\\||\\||~";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
@@ -199,12 +185,7 @@ namespace AnalizadorLexico.control
                         aux += caracteres[j];
                         auxTokens.Add(new Token(aux, i, j));
                         aux = "";
-                    }//si es un comentario
-                    else if (caracteres[j].Equals("_") && caracteres[j + 1].Equals("_"))
-                    {
-                        aux = "";
-                        break;
-                    }//si es numero
+                    }
                     else if (caracteres[j].Equals("~") && EsNumero(caracteres[j + 1]))
                     {
                         aux = caracteres[j];
@@ -292,10 +273,6 @@ namespace AnalizadorLexico.control
                 else if (EsComparador(tokens[i].lexema))
                 {
                     tokens[i].token = "Comparador";
-                }
-                else if (EsComentario(tokens[i].lexema))
-                {
-                    tokens[i].token = "Comentario";
                 }
                 else if (tokens[i].lexema.Equals(","))
                 {
