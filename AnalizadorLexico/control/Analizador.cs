@@ -44,7 +44,9 @@ namespace AnalizadorLexico.control
                     {
                         linea = linea.Trim();
                         if (linea != "") {
-                            lineas.Add(Regex.Replace(linea, @"\s+", " "));
+                            linea = Regex.Replace(linea, @"\s+", " ");
+                            linea = linea.Split(';')[0];
+                            lineas.Add(linea);
                         }
                     }
                 }
@@ -86,7 +88,7 @@ namespace AnalizadorLexico.control
         public bool EsNumero(string cadena)
         {
 
-            string patron = @"^~?[0-9|.]+";
+            string patron = @"^~?[0-9|.]+$";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
@@ -198,19 +200,10 @@ namespace AnalizadorLexico.control
                         auxTokens.Add(new Token(aux, i, j));
                         aux = "";
                     }//si es un comentario
-                    else if (EsBarraBaja(caracteres[j]))
+                    else if (caracteres[j].Equals("_") && caracteres[j + 1].Equals("_"))
                     {
-                        aux = caracteres[j];
-                        j++;
-                        while (j < caracteres.Length - 1)
-                        {
-                            aux += caracteres[j];
-                            j++;
-                        }
-                        aux += caracteres[j];
-                        auxTokens.Add(new Token(aux, i, j));
-                        Console.WriteLine("!!!!!!!!!!!!!!!!!comentario: " + aux);
                         aux = "";
+                        break;
                     }//si es numero
                     else if (caracteres[j].Equals("~") && EsNumero(caracteres[j + 1]))
                     {
@@ -272,11 +265,11 @@ namespace AnalizadorLexico.control
 
             for (int i = 0; i < auxTokens.Count; i++)
             {
-                if(EsCadena(tokens[i].lexema))
+                if (EsCadena(tokens[i].lexema))
                 {
                     tokens[i].token = "Cadena";
-                } 
-                else if(EsPalabraReservada(tokens[i].lexema))
+                }
+                else if (EsPalabraReservada(tokens[i].lexema))
                 {
                     tokens[i].token = "Palabra Reservada";
                 }
@@ -311,6 +304,10 @@ namespace AnalizadorLexico.control
                 else if (EsIdentificador(tokens[i].lexema))
                 {
                     tokens[i].token = "Identificador";
+                }
+                else
+                {
+                    tokens[i].token = "No definido";
                 }
                 
             }
