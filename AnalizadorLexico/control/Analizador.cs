@@ -68,7 +68,7 @@ namespace AnalizadorLexico.control
         public bool EsIdentificador(string cadena)
         {
 
-            string patron = @"^[^\\d].*$";
+            string patron = "^[^\\d].*$";
 
             Match match = Regex.Match(cadena, patron);
 
@@ -86,19 +86,33 @@ namespace AnalizadorLexico.control
         public bool EsNumero(string cadena)
         {
 
-            string patron = "^~?[0-9|.]+";
+            string patron = @"^~?[0-9|.]+";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
 
-        public bool EsOperador(string cadena){
+        public bool EsOperadorA(string cadena){
 
-            string patron = "\\+|-|\\*|/|\\^|!|<|>";
+            string patron = "\\+|-|\\*|/|\\^";
             Match match = Regex.Match(cadena, patron);
             return match.Success;     
         }
 
-        public bool EsPoLoC(string cadena){
+        public bool EsOperadorL(string cadena)
+        {
+            string patron = "&|&&|\\||\\|\\||!";
+            Match match = Regex.Match(cadena, patron);
+            return match.Success;
+        }
+
+        public bool EsComparador(string cadena)
+        {
+            string patron = "<|>|==|!=|>=|<=";
+            Match match = Regex.Match(cadena, patron);
+            return match.Success;
+        }
+
+        public bool EsSimboloA(string cadena){
 
             string patron = "\\(|\\)|\\[|\\]|{|}";
             Match match = Regex.Match(cadena, patron);
@@ -106,11 +120,16 @@ namespace AnalizadorLexico.control
         }
 
         public bool EsComilla(string cadena){
-            //string comilla = "\"";
-            //string patron = @"" + comilla + "|'";
             string patron = "\"|'";
             Match match = Regex.Match(cadena, patron);
             return match.Success; 
+        }
+
+        public bool EsBarraBaja(string cadena)
+        {
+            string patron = "_";
+            Match match = Regex.Match(cadena, patron);
+            return match.Success;
         }
 
         public bool EsCadena(string cadena){
@@ -122,14 +141,14 @@ namespace AnalizadorLexico.control
 
         public bool EsComentario(string cadena)
         {
-            string patron = "^#[\\w|\\s]*";
+            string patron = "^_[\\w|\\s]*";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
 
         public bool EsSimbolo(string cadena)
         {
-            string patron = ":|\\(|\\)|=|\\[|\\]|{|}|-|\\+|>|<|,|\\*|/|!|\"|'|-=|\\+=|!=|&&|&|\\|\\||\\||<=|>=";
+            string patron = ":|\\(|\\)|=|\\[|\\]|{|}|-|\\+|>|<|,|\\*|/|!|\"|'|&|\\|\\||\\|";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
@@ -143,20 +162,24 @@ namespace AnalizadorLexico.control
 
             for (int i = 0; i < codigo.Length; i++)
             {
-                caracteres = new string[codigo[i].Length];
+                //no borrar estas 2 líneas por favor, son para evitar excepciones
+                caracteres = new string[codigo[i].Length + 1];
+                caracteres[codigo[i].Length] = "";
 
-                for (int j = 0; j < caracteres.Length; j++)
+                //no quitar el -1
+                for (int j = 0; j < caracteres.Length - 1; j++)
                 {
                     caracteres[j] = codigo[i].Substring(j, 1);
                 }
 
-                if (!aux.Equals(""))
+                if (!aux.Equals("") && !aux.Equals(" "))
                 {
                     auxTokens.Add(new Token(aux, i, 0));
                     aux = "";
                 }
 
-                for (int j = 0; j < caracteres.Length; j++)
+                //no quitar el -1
+                for (int j = 0; j < caracteres.Length - 1; j++)
                 {
                     if (!caracteres[j].Equals(" ") && !caracteres[j].Equals("\t") && !EsSimbolo(caracteres[j]))
                     {
@@ -175,7 +198,7 @@ namespace AnalizadorLexico.control
                         auxTokens.Add(new Token(aux, i, j));
                         aux = "";
                     }//si es un comentario
-                    else if (caracteres[j].Equals("_"))
+                    else if (EsBarraBaja(caracteres[j]))
                     {
                         aux = caracteres[j];
                         j++;
@@ -186,6 +209,7 @@ namespace AnalizadorLexico.control
                         }
                         aux += caracteres[j];
                         auxTokens.Add(new Token(aux, i, j));
+                        Console.WriteLine("!!!!!!!!!!!!!!!!!comentario: " + aux);
                         aux = "";
                     }//si es numero
                     else if (caracteres[j].Equals("~") && EsNumero(caracteres[j + 1]))
@@ -203,11 +227,27 @@ namespace AnalizadorLexico.control
                     }
                     else if (caracteres[j].Equals("\t") || caracteres[j].Equals(" "))
                     {
-                        if (!aux.Equals("") )
+                        if (!aux.Equals(""))
                         {
                             auxTokens.Add(new Token(aux, i, j));
                         }
                         aux = "";
+                    }
+                    else if (EsSimbolo(caracteres[j]))
+                    {
+                        if (EsSimbolo(caracteres[j]) && caracteres[j + 1].Equals("="))
+                        {
+                            if (!EsSimboloA(caracteres[j]))
+                            {
+                                auxTokens.Add(new Token(caracteres[j] + caracteres[j + 1], i, j));
+                                j++;
+                            }
+                            else
+                            {
+                                auxTokens.Add(new Token(caracteres[j], i, j));
+                            }
+                            aux = "";
+                        }
                     }
                     else if (EsSimbolo(caracteres[j]))
                     {
@@ -217,7 +257,7 @@ namespace AnalizadorLexico.control
                     }
                 }
 
-                if (i == codigo.Length - 1)
+                if (i == codigo.Length - 1 && !aux.Equals(" ") && !aux.Equals(""))
                 {
                     auxTokens.Add(new Token(aux, i, codigo.Length - 1));
                 }
@@ -240,7 +280,7 @@ namespace AnalizadorLexico.control
                 {
                     tokens[i].token = "Palabra Reservada";
                 }
-                else if (EsPoLoC(tokens[i].lexema))
+                else if (EsSimboloA(tokens[i].lexema))
                 {
                     tokens[i].token = "Agrupación";
                 }
@@ -248,9 +288,17 @@ namespace AnalizadorLexico.control
                 {
                     tokens[i].token = "Número";
                 }
-                else if (EsOperador(tokens[i].lexema))
+                else if (EsOperadorA(tokens[i].lexema))
                 {
-                    tokens[i].token = "Operador";
+                    tokens[i].token = "Operador Aritmético";
+                }
+                else if (EsOperadorL(tokens[i].lexema))
+                {
+                    tokens[i].token = "Operador Lógico";
+                }
+                else if (EsComparador(tokens[i].lexema))
+                {
+                    tokens[i].token = "Comparador";
                 }
                 else if (EsComentario(tokens[i].lexema))
                 {
@@ -258,7 +306,7 @@ namespace AnalizadorLexico.control
                 }
                 else if (tokens[i].lexema.Equals(","))
                 {
-                    tokens[i].token = "separador";
+                    tokens[i].token = "Separador";
                 }
                 else if (EsIdentificador(tokens[i].lexema))
                 {
