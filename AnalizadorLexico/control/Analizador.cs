@@ -13,21 +13,39 @@ namespace AnalizadorLexico.control
 {
     class Analizador
     {
-        public string[] LeerArchivo()
+        public bool Analizar(string filePath) {
+            string[] codigo = this.LeerArchivo(filePath);
+            Token[] tokens = this.Reconocer(codigo);
+
+            for (int i = 0; i < codigo.Length; i++)
+            {
+                Console.WriteLine(codigo[i]);
+            }
+
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                Console.WriteLine(tokens[i].ToString());
+            }
+            return false;
+        }
+        public string[] LeerArchivo(string filePath)
         {
             string[] codigo;
             List<string> lineas = new List<string>();
             StreamReader reader;
             try
             {
-                reader = new StreamReader("Ejemplo.txt");
+                reader = new StreamReader(filePath);
                 string linea = "";
                 while (linea != null)
                 {
                     linea = reader.ReadLine();
                     if (linea != null)
                     {
-                        lineas.Add(linea);
+                        linea = linea.Trim();
+                        if (linea != "") {
+                            lineas.Add(Regex.Replace(linea, @"\s+", " "));
+                        }
                     }
                 }
                 
@@ -125,10 +143,9 @@ namespace AnalizadorLexico.control
 
             for (int i = 0; i < codigo.Length; i++)
             {
-                caracteres = new string[codigo[i].Length + 1];
-                caracteres[codigo[i].Length] = "";
+                caracteres = new string[codigo[i].Length];
 
-                for (int j = 0; j < caracteres.Length - 1; j++)
+                for (int j = 0; j < caracteres.Length; j++)
                 {
                     caracteres[j] = codigo[i].Substring(j, 1);
                 }
@@ -139,7 +156,7 @@ namespace AnalizadorLexico.control
                     aux = "";
                 }
 
-                for (int j = 0; j < caracteres.Length - 1; j++)
+                for (int j = 0; j < caracteres.Length; j++)
                 {
                     if (!caracteres[j].Equals(" ") && !caracteres[j].Equals("\t") && !EsSimbolo(caracteres[j]))
                     {

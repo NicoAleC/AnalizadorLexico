@@ -13,20 +13,7 @@ namespace AnalizadorLexico
         static void Main(string[] args)
         {
             Analizador a = new Analizador();
-            string[] codigo = a.LeerArchivo();
-            Token[] tokens = a.Reconocer(codigo);
-
-            for(int i = 0; i < codigo.Length; i++)
-            {
-                Console.WriteLine(codigo[i]);
-            }
-
-            for (int i = 0; i < tokens.Length; i++)
-            {
-                Console.WriteLine(tokens[i].ToString());
-            }
-          
-
+            a.Analizar("Ejemplo.txt");
             Console.ReadKey();
         }
     }
