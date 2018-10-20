@@ -88,7 +88,7 @@ namespace AnalizadorLexico.control
         public bool EsNumero(string cadena)
         {
 
-            string patron = @"^~?[0-9|.]+$";
+            string patron = @"^~?[0-9]+.?[0-9]+$";
             Match match = Regex.Match(cadena, patron);
             return match.Success;
         }
